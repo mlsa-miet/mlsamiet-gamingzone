@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence, useAnimationControls, type Variants } from 'framer-motion';
 import Image from 'next/image';
 
@@ -143,28 +143,138 @@ function IntroAnimation({ onComplete }: { onComplete: () => void }) {
   );
 }
 
+// --- NEW TYPING ANIMATION HOOK ---
+function useTypingEffect(fullText: string, speed: number = 50, startDelay: number = 0) {
+  const [text, setText] = useState('');
+  const [isComplete, setIsComplete] = useState(false);
+
+  useEffect(() => {
+    // Start after the initial delay
+    const startTimeout = setTimeout(() => {
+      let i = 0;
+      const interval = setInterval(() => {
+        setText(fullText.substring(0, i + 1));
+        i++;
+        if (i > fullText.length) {
+          clearInterval(interval);
+          setIsComplete(true);
+        }
+      }, speed);
+      return () => clearInterval(interval);
+    }, startDelay);
+    
+    return () => clearTimeout(startTimeout);
+  }, [fullText, speed, startDelay]);
+
+  return { text, isComplete };
+}
+
+
+// --- NEW TYPED LINE COMPONENT ---
+function TypedLine({ 
+  text, 
+  prefix = "", 
+  color = "text-green-400", 
+  startDelay = 0, 
+  onComplete = () => {} 
+}: { 
+  text: string; 
+  prefix?: string; 
+  color?: string; 
+  startDelay?: number; 
+  onComplete?: () => void;
+}) {
+  const { text: typedText, isComplete } = useTypingEffect(text, 50, startDelay);
+
+  // We still use onComplete to chain animations, but it's triggered by isComplete
+  useEffect(() => {
+    if (isComplete) {
+      onComplete();
+    }
+  }, [isComplete, onComplete]);
+
+  return (
+    <p>
+      {/* FIX: Escaped the '>' character */}
+      <span className="text-gray-400">{prefix}</span>
+      <span className={color}>{typedText}</span>
+    </p>
+  );
+}
+
+// --- NEW ANIMATED LOADER COMPONENT ---
+function AnimatedLoader({ startDelay = 0, onComplete = () => {} }: { startDelay?: number; onComplete?: () => void; }) {
+  const [progress, setProgress] = useState(0);
+  const max = 10;
+
+  useEffect(() => {
+    const startTimeout = setTimeout(() => {
+      const interval = setInterval(() => {
+        setProgress(p => {
+          if (p >= max) {
+            clearInterval(interval);
+            onComplete(); // Fire onComplete when loader is full
+            return max;
+          }
+          return p + 1;
+        });
+      }, 100);
+      return () => clearInterval(interval);
+    }, startDelay);
+    return () => clearTimeout(startTimeout);
+  }, [startDelay, onComplete]);
+
+  const loader = `[${'█'.repeat(progress)}${'.'.repeat(max - progress)}]`;
+  return (
+    <p>
+      {/* FIX: Escaped the '>' character */}
+      <span className="text-gray-400">{'> '}</span>
+      <span className="text-green-400">Attempting to reinitialize MIET NODE {loader}</span>
+    </p>
+  );
+}
+
+
 // --- NEW STRANGER THINGS LANDING PAGE COMPONENT ---
 
 function StrangerLandingPage() {
   const [guess, setGuess] = useState("");
   const [message, setMessage] = useState("");
+  const [step, setStep] = useState(0); // State to manage typing waterfall
+  const [startTerminal, setStartTerminal] = useState(false); // NEW: State to trigger animation
 
   const targetWord = "RUN";
   const hashedWord = "UlVO"; // "RUN" in Base64
 
   const checkAnswer = () => {
     if (guess.toUpperCase() === targetWord) {
-      setMessage("SUCCESS: YOU CRACKED THE CODE.");
+      setMessage("SUCCESS: YOU CRACKED THE CODE. ACCESS GRANTED.");
     } else {
-      setMessage("ERROR: INCORRECT. TRY AGAIN.");
+      setMessage("ERROR: INCORRECT. ACCESS DENIED.");
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      checkAnswer();
-    }
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    checkAnswer();
   };
+
+  // NEW: Define the style for the new background image
+  const sectionsBackgroundStyle = {
+    backgroundImage: 'url(/bg.png)', // <-- REPLACE THIS
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundAttachment: 'fixed'
+  };
+
+  // --- FIX: Wrap all onComplete handlers in useCallback ---
+  const handleStep0 = useCallback(() => setTimeout(() => setStep(1), 500), []);
+  const handleStep1 = useCallback(() => setTimeout(() => setStep(2), 500), []);
+  const handleStep2 = useCallback(() => setTimeout(() => setStep(3), 300), []);
+  const handleStep3 = useCallback(() => setTimeout(() => setStep(4), 500), []);
+  const handleStep4 = useCallback(() => setTimeout(() => setStep(5), 100), []);
+  const handleStep5 = useCallback(() => setTimeout(() => setStep(6), 500), []);
+
 
   return (
     <motion.div 
@@ -172,10 +282,11 @@ function StrangerLandingPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5, delay: 0.5 }} // Fade in after intro fades out
+      // REMOVED: Shared background image from here
     >
-      {/* SECTION 1: HERO (Full screen, background image only)
+      {/* SECTION 1: HERO (Full screen, original background image)
       */}
-      <section 
+       <section 
         className="relative flex flex-col min-h-[75vh] sm:min-h-[85vh] md:min-h-screen text-white p-4 overflow-hidden"
       >
         {/* Background image constrained by responsive width container */}
@@ -220,80 +331,136 @@ function StrangerLandingPage() {
       */}
       <section 
         id="title-section" // Link target for scroll arrow
-        className="relative z-10 flex flex-col items-center justify-center text-center bg-black py-20 md:py-32"
+        className="relative z-10 flex flex-col items-center justify-center text-center bg-black/75 py-20 md:py-32" // Added transparency
+        style={sectionsBackgroundStyle} // NEW: Added new background
       >
         <h1 
-          className="text-3xl sm:text-4xl md:text-6xl text-red-600 flicker-text"
+          className="text-4xl md:text-6xl text-red-600 flicker-text"
           style={{ fontFamily: 'Bungee, cursive' }}
         >
           MLSA MIET
         </h1>
         <h2 
-          className="text-2xl sm:text-3xl md:text-5xl text-white mt-2"
+          className="text-3xl md:text-5xl text-white mt-2"
           style={{ fontFamily: 'Bungee, cursive' }}
         >
           PRESENTS
         </h2>
       </section>
 
-      {/* SECTION 3: HASHING GAME (Separate section, black bg)
+      {/* --- SECTION 3: HASHING GAME (RE-STRUCTURED) ---
       */}
       <section 
         id="game-section" // ID for the scroll-down link
-        className="relative z-10 flex flex-col items-center justify-center bg-black p-6 sm:p-8 md:p-12 pb-16 sm:pb-20 md:pb-32" // Reduced vertical padding
+        className="relative z-10 flex flex-col items-center justify-center bg-black/75 p-8 md:p-12 pb-20 md:pb-32" // Added transparency
+        style={sectionsBackgroundStyle} // NEW: Added new background
       >
-        <div className="p-4 sm:p-6 md:p-8 bg-black border-2 border-red-900 rounded-lg shadow-2xl shadow-red-900/50 w-full max-w-md sm:max-w-lg lg:max-w-2xl">
+        {/* Kept the original red-bordered container */}
+        <div className="p-6 md:p-8 bg-black border-2 border-red-900 rounded-lg shadow-2xl shadow-red-900/50 w-full max-w-lg">
+          {/* Kept the original title */}
           <h3 
-            className="text-xl sm:text-2xl md:text-3xl text-red-500 flicker-text text-center"
+            className="text-2xl md:text-3xl text-red-500 flicker-text text-center"
             style={{ fontFamily: 'Bungee, cursive' }}
           >
             THE HASHING CHALLENGE
           </h3>
-          <p className="mt-3 sm:mt-4 text-gray-300 text-center text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif' }}>
+          {/* Kept the original description */}
+          <p className="mt-4 text-gray-300 text-center" style={{ fontFamily: 'Inter, sans-serif' }}>
             The signal is corrupted. Decrypt the message to proceed.
           </p>
-          
-          <div className="my-4 sm:my-6 p-3 sm:p-4 bg-gray-900 border border-gray-700 rounded-md">
-            <p className="text-sm text-gray-400" style={{ fontFamily: 'Inter, sans-serif' }}>ENCRYPTED MESSAGE:</p>
-            <p 
-              className="text-2xl sm:text-3xl text-green-400"
-              style={{ fontFamily: 'monospace' }}
-            >
-              {hashedWord}
-            </p>
-          </div>
 
-          <p className="text-gray-400 text-sm sm:text-base" style={{ fontFamily: 'Inter, sans-serif' }}>
-            Brute-force the original word:
-          </p>
-          <input 
-            type="text"
-            value={guess}
-            onChange={(e) => {
-              setGuess(e.target.value);
-              setMessage(""); // Clear message on new input
-            }}
-            onKeyPress={handleKeyPress}
-            placeholder="TYPE HERE..."
-            className="mt-2 w-full px-3 py-2 sm:px-4 sm:py-3 bg-transparent border-b-2 border-red-500 text-white text-base sm:text-xl text-center uppercase placeholder-gray-600 focus:outline-none focus:border-red-400 focus:bg-gray-900/50"
-            style={{ fontFamily: 'monospace' }}
-          />
-          <button
-            onClick={checkAnswer}
-            className="mt-6 w-full px-4 py-2 sm:px-6 sm:py-3 bg-red-600 text-white text-base sm:text-lg rounded-lg shadow-lg transition-all duration-300 ease-in-out hover:bg-red-700 hover:shadow-red-500/50 focus:outline-none"
-            style={{ fontFamily: 'Bungee, cursive' }}
+          {/* NEW: Terminal window inserted inside the card */}
+          {/* NEW: Added onViewportEnter to trigger animation */}
+          <motion.div 
+            className="p-4 bg-black h-96 overflow-y-auto mt-6 border border-gray-700 rounded"
+            style={{ fontFamily: 'Roboto Mono, monospace' }}
+            onViewportEnter={() => setStartTerminal(true)}
+            viewport={{ once: true, amount: 0.5 }} // Trigger once when 50% is visible
           >
-            DECRYPT
-          </button>
+            {/* The typing animation waterfall with delays */}
+            {/* NEW: Only render if 'startTerminal' is true */}
+            {startTerminal && <TypedLine 
+              text="welcome to MIET LAB" 
+              prefix={"> "} 
+              onComplete={handleStep0} // Use memoized handler
+            />}
+            
+            {startTerminal && step >= 1 && <TypedLine 
+              text="CONNECTION LOST..." 
+              prefix={"> "} 
+              startDelay={0} 
+              onComplete={handleStep1} // Use memoized handler
+            />}
+            
+            {startTerminal && step >= 2 && <AnimatedLoader 
+              startDelay={0} 
+              onComplete={handleStep2} // Use memoized handler
+            />}
+            
+            {startTerminal && step >= 3 && <TypedLine 
+              text="WARNING: SYSTEM INTEGRITY" 
+              prefix={"> "} 
+              startDelay={0} 
+              onComplete={handleStep3} // Use memoized handler
+            />}
+            
+            {startTerminal && step >= 4 && <TypedLine 
+              text="Neural firewall breached." 
+              prefix="[OK] " 
+              color="text-green-400" 
+              startDelay={0} 
+              onComplete={handleStep4} // Use memoized handler
+            />}
+            
+            {startTerminal && step >= 5 && <TypedLine 
+              text="Rift stabilization offline" 
+              prefix="[ERR] " 
+              color="text-red-500" 
+              startDelay={0} 
+              onComplete={handleStep5} // Use memoized handler
+            />}
 
-          {message && (
-            <p 
-              className={`mt-4 text-lg text-center ${message.startsWith("SUCCESS") ? 'text-green-400' : 'text-red-400'}`}
-              style={{ fontFamily: 'monospace' }}
-            >
-              {message}
-            </p>
-          )}
+            {/* Hashing Challenge Input - appears at the end */}
+            {startTerminal && step >= 6 && (
+              <div className="mt-2">
+                {/* The Hashed Word */}
+                <div className="my-4 p-2 bg-gray-900 border border-gray-700 rounded-md">
+                  <p className="text-sm text-gray-400">ENCRYPTED MESSAGE:</p>
+                  <p className="text-xl text-green-400">{hashedWord}</p>
+                </div>
+                
+                {/* The Input Form */}
+                <form onSubmit={handleFormSubmit}>
+                  <label htmlFor="accessCode" className="text-gray-400">
+                    Enter the Acess Code
+                  </label>
+                  <input 
+                    id="accessCode"
+                    type="text"
+                    value={guess}
+                    onChange={(e) => {
+                      setGuess(e.target.value.toUpperCase());
+                      setMessage(""); // Clear message on new input
+                    }}
+                    autoFocus
+                    className="ml-2 bg-transparent border-none text-white text-sm uppercase focus:outline-none w-1/2"
+                    style={{ fontFamily: 'Roboto Mono, monospace' }}
+                  />
+                  {/* Hidden button to allow "Enter" key submission */}
+                  <button type="submit" className="hidden"></button>
+                </form>
+
+                {/* Success/Error Message */}
+                {message && (
+                  <p 
+                    className={`mt-2 ${message.startsWith("SUCCESS") ? 'text-green-400' : 'text-red-500'}`}
+                  >
+                    {message}
+                  </p>
+                )}
+              </div>
+            )}
+          </motion.div>
         </div>
       </section>
     </motion.div>
