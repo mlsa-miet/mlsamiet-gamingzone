@@ -166,7 +166,7 @@ export default function HashingGamePage() {
                    </span>
                    <div>
                      <p className={`${rajdhani.className} font-bold text-white leading-tight max-w-[100px] truncate`}>
-                       {entry.username}
+                       {entry.name}
                      </p>
                      <div className="flex gap-3 text-xs text-gray-500 font-mono mt-1">
                         <span className="text-blue-400">PTS: {entry.score}</span>
