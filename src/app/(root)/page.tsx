@@ -285,7 +285,7 @@ function GamingZoneHome() {
             <div className="p-6 space-y-4 relative z-20 bg-[#0a0a0a]">
               <div className="flex justify-between items-start">
                 <h3 className={`${orbitron.className} text-xl font-bold text-white group-hover:text-blue-400 transition-colors`}>
-                  Hashing Game
+                  Hash Hunt
                 </h3>
                 <span className="text-xs px-2 py-1 rounded bg-green-500/20 text-green-400 border border-green-500/30 font-mono">
                   ONLINE

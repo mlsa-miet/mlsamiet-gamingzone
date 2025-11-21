@@ -22,6 +22,7 @@ type Challenge = {
   span?: number; // Controls grid width (1 = normal, 2 = wide)
 };
 
+
 // Mixed list of Base64, MD4, DES, and AES challenges
 const CHALLENGES: Challenge[] = [
   // --- ROW 1 (Mix) ---
@@ -117,7 +118,7 @@ export default function HashingGamePage() {
       {/* --- HEADER --- */}
       <header className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-black/80 backdrop-blur-md z-50 sticky top-0">
         <div className="flex items-center gap-4">
-            <Link href="/home">
+            <Link href="/">
               <div className="relative w-10 h-10 md:w-12 md:h-12 cursor-pointer">
                 <Image src="/mlsa.jpg" alt="MLSA Logo" fill className="object-contain"/>
               </div>
@@ -137,7 +138,7 @@ export default function HashingGamePage() {
                 </span>
              </div>
            ) : (
-             <SignInButton mode="modal" forceRedirectUrl="/home">
+             <SignInButton mode="modal" forceRedirectUrl="/">
                 <button className={`${orbitron.className} text-red-500 hover:text-red-400 transition-colors animate-pulse`}>
                   LOGIN_REQUIRED
                 </button>
@@ -227,7 +228,7 @@ export default function HashingGamePage() {
                     ${rajdhani.className} font-mono text-sm md:text-base break-all text-center w-full px-2
                     ${solved ? 'text-green-400' : 'text-gray-300'}
                   `}>
-                    {solved ? challenge.original : challenge.hash}
+                    {solved ? "ACCESS GRANTED" : challenge.hash}
                   </span>
                   
                   {/* Verified Badge */}
