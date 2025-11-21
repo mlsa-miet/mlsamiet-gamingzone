@@ -214,7 +214,7 @@ function GamingZoneHome() {
             transition={{ delay: 1.7, duration: 0.8 }}
             className={`${orbitron.className} text-4xl md:text-6xl lg:text-7xl font-black leading-tight`}
           >
-            MLSA PRESENTS <br />
+            MLSA MIET PRESENTS <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 animate-pulse">
               GAMING ZONE
             </span>
@@ -258,14 +258,13 @@ function GamingZoneHome() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           
-          {/* --- GAME CARD: HASHING GAME --- */}
+          {/* 1. HASHING GAME (Active) */}
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             className="group relative bg-white/5 rounded-xl overflow-hidden border border-white/5 hover:border-blue-500/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(59,130,246,0.2)]"
           >
-            {/* Card Image Area */}
             <div className="relative h-56 w-full bg-gray-900 overflow-hidden">
                <Image 
                  src="/hashing-game-thumb.jpg" 
@@ -281,7 +280,6 @@ function GamingZoneHome() {
                </div>
             </div>
 
-            {/* Card Content */}
             <div className="p-6 space-y-4 relative z-20 bg-[#0a0a0a]">
               <div className="flex justify-between items-start">
                 <h3 className={`${orbitron.className} text-xl font-bold text-white group-hover:text-blue-400 transition-colors`}>
@@ -291,12 +289,9 @@ function GamingZoneHome() {
                   ONLINE
                 </span>
               </div>
-              
               <p className={`${rajdhani.className} text-gray-400 font-medium text-sm line-clamp-2`}>
                 The signal is corrupted. Decrypt the messages and match the hash values to breach the firewall.
               </p>
-              
-              {/* PLAY BUTTON - Redirects to /hashing-game */}
               <Link href="/hashing-game" className="block w-full pt-2">
                 <button className={`
                   w-full py-3 rounded bg-blue-600 hover:bg-blue-500 
@@ -308,6 +303,84 @@ function GamingZoneHome() {
                   Play Now
                 </button>
               </Link>
+            </div>
+          </motion.div>
+
+          {/* 2. COMING SOON: Network Defense */}
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="group relative bg-white/5 rounded-xl overflow-hidden border border-white/5 opacity-75 hover:opacity-100 transition-opacity"
+          >
+            <div className="relative h-56 w-full bg-gray-900 overflow-hidden">
+               <div className="absolute inset-0 bg-gradient-to-br from-red-900/10 to-orange-900/10 z-0"></div>
+               <div className="absolute inset-0 flex items-center justify-center z-10">
+                  <span className={`${orbitron.className} text-5xl font-black text-white/5`}>
+                    DEFENSE
+                  </span>
+               </div>
+            </div>
+
+            <div className="p-6 space-y-4 relative z-20 bg-[#0a0a0a]">
+              <div className="flex justify-between items-start">
+                <h3 className={`${orbitron.className} text-xl font-bold text-gray-500`}>
+                  Net-Defense Sim
+                </h3>
+                <span className="text-xs px-2 py-1 rounded bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 font-mono">
+                  SOON
+                </span>
+              </div>
+              <p className={`${rajdhani.className} text-gray-500 font-medium text-sm line-clamp-2`}>
+                Manage server loads and deflect DDoS attacks in this real-time strategy simulation.
+              </p>
+              <button disabled className={`
+                w-full py-3 rounded bg-white/5 text-gray-500 
+                font-bold tracking-widest uppercase cursor-not-allowed
+                ${orbitron.className}
+              `}>
+                Coming Soon
+              </button>
+            </div>
+          </motion.div>
+
+          {/* 3. COMING SOON: Quantum Cipher */}
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4 }}
+            className="group relative bg-white/5 rounded-xl overflow-hidden border border-white/5 opacity-75 hover:opacity-100 transition-opacity"
+          >
+            <div className="relative h-56 w-full bg-gray-900 overflow-hidden">
+               <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 to-pink-900/10 z-0"></div>
+               <div className="absolute inset-0 flex items-center justify-center z-10">
+                  <span className={`${orbitron.className} text-5xl font-black text-white/5`}>
+                    QUANTUM
+                  </span>
+               </div>
+            </div>
+
+            <div className="p-6 space-y-4 relative z-20 bg-[#0a0a0a]">
+              <div className="flex justify-between items-start">
+                <h3 className={`${orbitron.className} text-xl font-bold text-gray-500`}>
+                  Quantum Breaker
+                </h3>
+                <span className="text-xs px-2 py-1 rounded bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 font-mono">
+                  SOON
+                </span>
+              </div>
+              <p className={`${rajdhani.className} text-gray-500 font-medium text-sm line-clamp-2`}>
+                Solve multi-dimensional logic puzzles to stabilize the quantum core before meltdown.
+              </p>
+              <button disabled className={`
+                w-full py-3 rounded bg-white/5 text-gray-500 
+                font-bold tracking-widest uppercase cursor-not-allowed
+                ${orbitron.className}
+              `}>
+                Coming Soon
+              </button>
             </div>
           </motion.div>
           
