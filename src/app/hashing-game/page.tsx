@@ -24,25 +24,22 @@ type Challenge = {
 
 
 const CHALLENGES: Challenge[] = [
-  { id: 1, hash: "U1lTVEVN", original: "SYSTEM", type: "Base64", hint: "Standard-64", span: 1 },
+  { id: 1, hash: "U1lTVEVN", original: "SAMAARAMBH3.O", type: "Base64", hint: "Standard-64", span: 1 },
   { id: 2, hash: "TmV4dEpT", original: "NEXTJS", type: "Base64", hint: "Standard-64", span: 1 },
-  { id: 11, hash: "8d3776b381f792577d965c53f47499f9", original: "LINUX", type: "MD4", hint: "Legacy-128", span: 2 },
-  { id: 21, hash: "3b7a9f8c2d1e5b4a6f0e8d2c9b1a3f5e", original: "NETWORK", type: "AES", hint: "Military-256", span: 2 },
-  { id: 3, hash: "Q1JZUFRP", original: "CRYPTO", type: "Base64", hint: "Standard-64", span: 1 },
-  { id: 4, hash: "U0VSVkVS", original: "SERVER", type: "Base64", hint: "Standard-64", span: 1 },
-  { id: 5, hash: "REVCVUc=", original: "DEBUG", type: "Base64", hint: "Standard-64", span: 1 },
+  { id: 11, hash: "8d3776b381f792577d965c53f47499f9", original: "CLOUD", type: "MD4", hint: "Legacy-128", span: 2 },
+  { id: 21, hash: "3b7a9f8c2d1e5b4a6f0e8d2c9b1a3f5e", original: "SATURDAY", type: "AES", hint: "Military-256", span: 2 },
+  { id: 3, hash: "Q1JZUFRP", original: "LAPTOP", type: "Base64", hint: "Standard-64", span: 1 },
+  { id: 4, hash: "U0VSVkVS", original: "MLSA", type: "Base64", hint: "Standard-64", span: 1 },
+  { id: 5, hash: "REVCVUc=", original: "ID8NXT", type: "Base64", hint: "Standard-64", span: 1 },
   { id: 13, hash: "f3282652c7f27d284579222d0408229d", original: "GITHUB", type: "MD4", hint: "Legacy-128", span: 2 },
-  { id: 6, hash: "V0VCMw==", original: "WEB3", type: "Base64", hint: "Standard-64", span: 1 },
-  { id: 22, hash: "9a2b3c4d5e6f708192a3b4c5d6e7f809", original: "SECURITY", type: "AES", hint: "Military-256", span: 2 },
-  { id: 23, hash: "81dc9bdb52d04dc2", original: "ENCRYPTION", type: "DES", hint: "Retro-56", span: 2 },
-  { id: 7, hash: "QkxPQ0s=", original: "BLOCK", type: "Base64", hint: "Standard-64", span: 1 },
-  { id: 8, hash: "Q0hBSU4=", original: "CHAIN", type: "Base64", hint: "Standard-64", span: 1 },
-  { id: 9, hash: "VE9LRU4=", original: "TOKEN", type: "Base64", hint: "Standard-64", span: 1 },
+  { id: 6, hash: "V0VCMw==", original: "GURUGRAM", type: "Base64", hint: "Standard-64", span: 1 },
+  { id: 22, hash: "9a2b3c4d5e6f708192a3b4c5d6e7f809", original: "PYTHON", type: "AES", hint: "Military-256", span: 2 },
+  { id: 23, hash: "81dc9bdb52d04dc2", original: "FETCH.AI", type: "DES", hint: "Retro-56", span: 2 },
+  { id: 7, hash: "QkxPQ0s=", original: "NETWORK", type: "Base64", hint: "Standard-64", span: 1 },
+  { id: 8, hash: "Q0hBSU4=", original: "MICROSOFT", type: "Base64", hint: "Standard-64", span: 1 },
+  { id: 9, hash: "VE9LRU4=", original: "CLERK", type: "Base64", hint: "Standard-64", span: 1 },
   { id: 10, hash: "REVQTE9Z", original: "DEPLOY", type: "Base64", hint: "Standard-64", span: 1 },
-  { id: 16, hash: "e10adc3949ba59abbe56e057f20f883e", original: "123456", type: "MD4", hint: "Legacy-128", span: 2 },
-  { id: 17, hash: "046745c72f13b9747492124624412434", original: "CODER", type: "MD4", hint: "Legacy-128", span: 2 },
-  { id: 18, hash: "db512914a57d223515c881483156e158", original: "TAILWIND", type: "MD4", hint: "Legacy-128", span: 2 },
-  { id: 24, hash: "ff00a2b3c4d5e6f7", original: "FIREWALL", type: "DES", hint: "Retro-56", span: 2 },
+  
 ];
 
 export default function HashingGamePage() {
